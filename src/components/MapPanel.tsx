@@ -1,41 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Layers, Sliders, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-// Define available NISAR raster layers
 type LayerKey = 'hhhh' | 'hvhv' | 'ratio' | 'ratiodb';
 
 interface LayerConfig {
   id: LayerKey;
   name: string;
   description: string;
-  // Placeholder tile URL template. Replace with team lead's verified Supabase URL when available.
   url: string;
 }
+
+const TILE_BASE =
+  'https://apbfchultmtjqzdbncsq.supabase.co/storage/v1/object/public/induspulse-tiles/tiles';
 
 const RASTER_LAYERS: LayerConfig[] = [
   {
     id: 'hhhh',
     name: 'HHHH Backscatter',
     description: 'Horizontal-Transmit, Horizontal-Receive polarization.',
-    url: 'https://placeholder.supabase.co/storage/v1/object/public/induspulse-tiles/tiles/HHHH/{z}/{x}/{y}.png'
+    url: `${TILE_BASE}/HHHH/{z}/{x}/{y}.png`
   },
   {
     id: 'hvhv',
     name: 'HVHV Backscatter',
-    description: 'Cross-polarization sensitive to volume scattering and vegetation structure.',
-    url: 'https://placeholder.supabase.co/storage/v1/object/public/induspulse-tiles/tiles/HVHV/{z}/{x}/{y}.png'
+    description: 'Cross-polarization, often more sensitive to vegetation and volume scattering.',
+    url: `${TILE_BASE}/HVHV/{z}/{x}/{y}.png`
   },
   {
     id: 'ratio',
     name: 'Polarization Ratio',
-    description: 'Ratio between polarizations highlighting surface roughness variations.',
-    url: 'https://placeholder.supabase.co/storage/v1/object/public/induspulse-tiles/tiles/Ratio/{z}/{x}/{y}.png'
+    description: 'Derived ratio between the two polarization channels.',
+    url: `${TILE_BASE}/polarization-ratio/{z}/{x}/{y}.png`
   },
   {
     id: 'ratiodb',
     name: 'Polarization Ratio (dB)',
-    description: 'Decibel scale representation for enhanced contrast visualization.',
-    url: 'https://placeholder.supabase.co/storage/v1/object/public/induspulse-tiles/tiles/RatioDB/{z}/{x}/{y}.png'
+    description: 'The same ratio on a decibel scale for easier contrast comparison.',
+    url: `${TILE_BASE}/polarization-ratio-db/{z}/{x}/{y}.png`
   }
 ];
 
@@ -44,8 +45,8 @@ export const MapPanel: React.FC = () => {
   const map = useRef<any>(null);
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [tileError, setTileError] = useState<boolean>(false);
 
-  // Layer control states
   const [activeLayer, setActiveLayer] = useState<LayerKey>('hhhh');
   const [opacity, setOpacity] = useState<number>(85);
   const [isLayerVisible, setIsLayerVisible] = useState<boolean>(true);
@@ -60,34 +61,33 @@ export const MapPanel: React.FC = () => {
         return;
       }
 
-      // Initialize MapLibre GL JS with OpenStreetMap dark-styled basemap foundation
       map.current = new maplibregl.Map({
         container: mapContainer.current,
         style: {
           version: 8,
           sources: {
-            'osm-tiles': {
+            'base-tiles': {
               type: 'raster',
-              tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+              tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
               tileSize: 256,
-              attribution: '&copy; OpenStreetMap contributors'
+              attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
             }
           },
           layers: [
             {
-              id: 'osm-layer',
+              id: 'base-layer',
               type: 'raster',
-              source: 'osm-tiles',
+              source: 'base-tiles',
               minzoom: 0,
               maxzoom: 19
             }
           ]
         },
-        center: [68.25, 25.8], // Lower Indus Basin / Sindh Corridor
+        center: [68.25, 25.8],
         zoom: 10,
         minZoom: 8,
         maxZoom: 14,
-        pitch: 15,
+        pitch: 0
       });
 
       map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
@@ -98,7 +98,11 @@ export const MapPanel: React.FC = () => {
       });
 
       map.current.on('error', (e: any) => {
-        console.error('MapLibre error:', e);
+        const status = e?.error?.status;
+        if (e?.sourceId === 'nisar-raster-source' && status !== 404) {
+          setTileError(true);
+        }
+        console.warn('MapLibre:', e?.error?.message ?? e);
       });
     } catch (err) {
       console.error('Initialization error:', err);
@@ -109,36 +113,32 @@ export const MapPanel: React.FC = () => {
       map.current?.remove();
       map.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle dynamic layer switching and opacity
   const addOrUpdateRasterLayer = (layerKey: LayerKey) => {
     if (!map.current || !map.current.isStyleLoaded()) return;
 
-    const currentLayerConfig = RASTER_LAYERS.find(l => l.id === layerKey);
-    if (!currentLayerConfig) return;
+    const cfg = RASTER_LAYERS.find((l) => l.id === layerKey);
+    if (!cfg) return;
+
+    setTileError(false);
 
     const sourceId = 'nisar-raster-source';
     const layerId = 'nisar-raster-layer';
 
-    // Remove existing layer & source if present
-    if (map.current.getLayer(layerId)) {
-      map.current.removeLayer(layerId);
-    }
-    if (map.current.getSource(sourceId)) {
-      map.current.removeSource(sourceId);
-    }
+    if (map.current.getLayer(layerId)) map.current.removeLayer(layerId);
+    if (map.current.getSource(sourceId)) map.current.removeSource(sourceId);
 
-    // Add new raster source (Supports Supabase XYZ tiles when URLs are active)
     map.current.addSource(sourceId, {
       type: 'raster',
-      tiles: [currentLayerConfig.url],
+      tiles: [cfg.url],
       tileSize: 256,
       minzoom: 10,
-      maxzoom: 12
+      maxzoom: 12,
+      attribution: 'NASA-ISRO NISAR L2 GCOV (processed by Orbital Intelligence)'
     });
 
-    // Add raster layer above basemap
     map.current.addLayer({
       id: layerId,
       type: 'raster',
@@ -149,10 +149,10 @@ export const MapPanel: React.FC = () => {
     });
   };
 
-  // Trigger layer update when activeLayer, opacity, or visibility changes
   useEffect(() => {
     if (!mapLoaded || !map.current) return;
     addOrUpdateRasterLayer(activeLayer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeLayer, mapLoaded]);
 
   useEffect(() => {
@@ -166,7 +166,6 @@ export const MapPanel: React.FC = () => {
 
   return (
     <div className="relative w-full h-full min-h-[540px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950 flex flex-col">
-      {/* Loading & Error Overlays */}
       {!mapLoaded && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 z-20 font-mono text-xs text-indigo-400 animate-pulse">
           INITIALIZING NISAR MAPLIBRE ENGINE...
@@ -179,7 +178,12 @@ export const MapPanel: React.FC = () => {
         </div>
       )}
 
-      {/* Floating Layer Control Panel Overlay on Top-Left of Map */}
+      {tileError && (
+        <div className="absolute top-4 right-16 z-10 bg-amber-900/90 border border-amber-700 text-amber-100 text-xs font-mono px-3 py-2 rounded-lg">
+          Some raster tiles are unavailable here.
+        </div>
+      )}
+
       <div className="absolute top-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl p-4 shadow-xl w-72 flex flex-col gap-3">
         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
           <div className="flex items-center gap-2 text-xs font-mono text-indigo-400">
@@ -191,11 +195,14 @@ export const MapPanel: React.FC = () => {
             className="text-slate-400 hover:text-white transition-colors"
             title={isLayerVisible ? 'Hide Layer' : 'Show Layer'}
           >
-            {isLayerVisible ? <Eye className="w-4 h-4 text-emerald-400" /> : <EyeOff className="w-4 h-4 text-rose-400" />}
+            {isLayerVisible ? (
+              <Eye className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <EyeOff className="w-4 h-4 text-rose-400" />
+            )}
           </button>
         </div>
 
-        {/* Layer Selection Buttons */}
         <div className="flex flex-col gap-1.5">
           {RASTER_LAYERS.map((layer) => (
             <button
@@ -208,15 +215,18 @@ export const MapPanel: React.FC = () => {
               }`}
             >
               <span>{layer.name}</span>
-              {activeLayer === layer.id && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />}
+              {activeLayer === layer.id && (
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+              )}
             </button>
           ))}
         </div>
 
-        {/* Opacity Slider */}
         <div className="flex flex-col gap-1.5 pt-2 border-t border-slate-800">
           <div className="flex justify-between text-xs font-mono text-slate-400">
-            <span className="flex items-center gap-1"><Sliders className="w-3.5 h-3.5" /> Opacity</span>
+            <span className="flex items-center gap-1">
+              <Sliders className="w-3.5 h-3.5" /> Opacity
+            </span>
             <span className="text-indigo-300">{opacity}%</span>
           </div>
           <input
@@ -230,19 +240,21 @@ export const MapPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Map Container Element */}
       <div ref={mapContainer} className="w-full h-full flex-1 min-h-[540px]" />
 
-      {/* Floating Active Layer Description & Scientific Notice Banner at Bottom */}
       <div className="absolute bottom-3 left-3 right-3 bg-slate-900/90 backdrop-blur-md border border-slate-800 px-4 py-2.5 rounded-xl text-xs text-slate-300 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pointer-events-none z-10">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-          <span className="font-mono text-indigo-300">{RASTER_LAYERS.find(l => l.id === activeLayer)?.name}:</span>
-          <span className="text-slate-400 truncate">{RASTER_LAYERS.find(l => l.id === activeLayer)?.description}</span>
+          <span className="font-mono text-indigo-300">
+            {RASTER_LAYERS.find((l) => l.id === activeLayer)?.name}:
+          </span>
+          <span className="text-slate-400 truncate">
+            {RASTER_LAYERS.find((l) => l.id === activeLayer)?.description}
+          </span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-amber-300 font-mono shrink-0">
           <AlertCircle className="w-3.5 h-3.5" />
-          <span>P2–P98 Percentile Stretch</span>
+          <span>Display stretch (P2-P98), not measurements</span>
         </div>
       </div>
     </div>
