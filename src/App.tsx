@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header } from './components/Header';
 import { MapPanel } from './components/MapPanel';
 import { Layers, ShieldAlert, Cpu, Database, Compass } from 'lucide-react';
