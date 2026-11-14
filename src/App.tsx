@@ -1,110 +1,116 @@
+import React from 'react';
+import { Header } from './components/Header';
+import { MapPanel } from './components/MapPanel';
+import { Layers, ShieldAlert, Cpu, Database, Compass } from 'lucide-react';
 
-import { Header } from "./components/Header";
-import { Layers, MapPin, Database, Activity, Info } from "lucide-react";
-
-export function App() {
+export default function App() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* Header */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+      {/* Top Header Component */}
       <Header />
 
-      {/* Main Dashboard Workspace */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
-        {/* Left Sidebar: Controls & Layer Management (1 Column) */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 shadow-xl">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h2 className="font-semibold text-sm tracking-wide text-indigo-400 flex items-center gap-2">
-              <Layers className="w-4 h-4" /> Radar Layer Controls
-            </h2>
-            <span className="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">
-              L2 GCOV
-            </span>
+      {/* Main Content Workspace */}
+      <main className="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 max-w-[1750px] w-full mx-auto">
+        
+        {/* Left Sidebar: Radar Layer Controls & Metadata */}
+        <aside className="lg:col-span-1 bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 flex flex-col gap-6 shadow-xl">
+          <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800">
+            <Layers className="w-5 h-5 text-indigo-400" />
+            <h2 className="font-semibold text-slate-200 tracking-wide">Radar Layer Controls</h2>
           </div>
 
-          <div className="space-y-3 text-sm">
-            <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition cursor-pointer">
-              <div className="font-medium text-slate-200">
-                27 October 2026 Scene
+          {/* Layer Controls Group */}
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-mono uppercase tracking-wider text-slate-400">Active Sensor Stream</label>
+            <div className="bg-slate-950/60 border border-indigo-500/30 rounded-xl p-3.5 flex flex-col gap-1.5 shadow-inner">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-indigo-300">L-Band GCOV (Validated)</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
-              <div className="text-xs text-slate-400 font-mono mt-1">
-                Track 41 | Frame 14 (HH, HV)
-              </div>
-            </div>
-            <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-800 opacity-60">
-              <div className="font-medium text-slate-400">
-                Baseline Comparison (Planned)
-              </div>
-              <div className="text-xs text-slate-500 font-mono mt-1">
-                Pending Colab Processing
-              </div>
+              <p className="text-xs text-slate-400">NISAR L2 Geocoded Coherent Product</p>
             </div>
           </div>
 
-          <div className="mt-auto bg-indigo-950/30 border border-indigo-900/40 rounded-lg p-3 text-xs text-indigo-300">
-            <p className="font-medium flex items-center gap-1 mb-1">
-              <Info className="w-3.5 h-3.5" /> Scientific Notice
-            </p>
-            Surface change analytics require multi-date interferometry. Single
-            observation displays verified radar backscatter.
+          {/* Scene Metadata Card */}
+          <div className="bg-slate-950/40 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-xs font-mono text-indigo-400">
+              <Cpu className="w-4 h-4" />
+              <span>ACQUISITION PARAMS</span>
+            </div>
+            <ul className="text-xs space-y-2 text-slate-300 font-mono">
+              <li className="flex justify-between border-b border-slate-800/60 pb-1.5">
+                <span className="text-slate-500">Date:</span>
+                <span>27 October 2026</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800/60 pb-1.5">
+                <span className="text-slate-500">Track / Frame:</span>
+                <span>Track 41 | Frame 14</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800/60 pb-1.5">
+                <span className="text-slate-500">Polarization:</span>
+                <span>HH, HV (Dual-Pol)</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-slate-500">Processing:</span>
+                <span className="text-amber-400">HDF5 / Colab Pipeline</span>
+              </li>
+            </ul>
           </div>
-        </div>
 
-        {/* Center/Right Main Area: Interactive Map & Observation Panel (3 Columns) */}
-        <div className="lg:col-span-3 flex flex-col gap-4">
-          {/* Map Placeholder */}
-          <div className="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center relative min-h-[400px] shadow-xl overflow-hidden group">
-            <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
-            <div className="z-10 text-center space-y-3 p-6 max-w-md">
-              <div className="w-16 h-16 bg-indigo-600/20 border border-indigo-500/30 rounded-full flex items-center justify-center mx-auto text-indigo-400 shadow-inner">
-                <MapPin className="w-8 h-8 animate-bounce" />
-              </div>
-              <h3 className="text-lg font-bold text-white">
-                Lower Indus Basin AOI Placeholder
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                MapLibre GL JS integration ready. Bounding box configured for
-                Sindh corridor (Sukkur to Keti Bandar / Indus Delta).
-              </p>
-              <div className="inline-block bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-xs font-mono text-indigo-300">
-                WKT: POLYGON((67.0 24.0, 69.5 24.0, ...))
-              </div>
+          {/* Scientific Compliance Notice */}
+          <div className="mt-auto bg-slate-950/80 border border-amber-500/20 rounded-xl p-3.5 flex items-start gap-3">
+            <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="text-xs text-slate-400 leading-relaxed">
+              <strong className="text-amber-300 block mb-0.5 font-medium">Scientific Integrity Rule</strong>
+              Single-observation displays verified radar backscatter. Multi-date interferometry requires rigorous baseline comparison.
             </div>
           </div>
+        </aside>
 
-          {/* Bottom Observation Panel Placeholder */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-xl">
-            <div className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-800">
-              <Database className="w-5 h-5 text-indigo-400" />
+        {/* Right Workspace: Interactive Map & Dataset Info */}
+        <section className="lg:col-span-3 flex flex-col gap-6">
+          
+          {/* Interactive Map Component Container */}
+          <div className="flex-1 min-h-[520px] flex flex-col">
+            <MapPanel />
+          </div>
+
+          {/* Bottom Summary Cards Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3.5 shadow-lg">
+              <div className="p-2.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <Database className="w-5 h-5" />
+              </div>
               <div>
-                <div className="text-xs text-slate-400">Dataset Size</div>
-                <div className="text-sm font-bold font-mono text-white">
-                  6.40 GB (HDF5)
-                </div>
+                <span className="text-xs text-slate-400 font-mono block">Dataset Volume</span>
+                <span className="text-sm font-semibold text-slate-200">6.40 GB (HDF5 Granule)</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-800">
-              <Activity className="w-5 h-5 text-emerald-400" />
+
+            <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3.5 shadow-lg">
+              <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
               <div>
-                <div className="text-xs text-slate-400">Data Maturity</div>
-                <div className="text-sm font-bold text-emerald-400">
-                  VALIDATED (Production)
-                </div>
+                <span className="text-xs text-slate-400 font-mono block">Data Maturity</span>
+                <span className="text-sm font-semibold text-emerald-300">VALIDATED (Production)</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-800">
-              <MapPin className="w-5 h-5 text-blue-400" />
+
+            <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3.5 shadow-lg">
+              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <Compass className="w-5 h-5" />
+              </div>
               <div>
-                <div className="text-xs text-slate-400">Primary Corridor</div>
-                <div className="text-sm font-bold text-white">
-                  Sukkur → Indus Delta
-                </div>
+                <span className="text-xs text-slate-400 font-mono block">Primary Corridor</span>
+                <span className="text-sm font-semibold text-slate-200">Sukkur → Indus Delta</span>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+
+        </section>
+
+      </main>
     </div>
   );
 }
-
-export default App;
