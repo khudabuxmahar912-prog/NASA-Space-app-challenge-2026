@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Header } from './components/Header';
 import { MapPanel } from './components/MapPanel';
 import { Layers, ShieldAlert, Database, Cpu, ExternalLink, CheckCircle2, ChevronRight, Info, BookOpen, X, Satellite } from 'lucide-react';
@@ -13,19 +13,19 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
       
       {/* Global Background Watermark - Fixed Position behind everything */}
-      <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-30 overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-25 overflow-hidden">
         <img 
           src="/watermark.png.jpeg" 
           alt="NASA Earth Watermark" 
-          className="w-[95%] max-w-[1600px] object-contain filter contrast-150 brightness-110"
+          className="w-[90%] max-w-[1500px] object-contain filter contrast-125 brightness-90"
         />
       </div>
 
       {/* Main Content Container */}
       <div className="relative z-10 flex flex-col min-h-screen">
         
-        {/* STICKY TOP BAR (Yeh scroll karne par upar hi fixed rahega) */}
-      <div className="sticky top-0 z-50 flex flex-col w-full bg-slate-950/95 border-b border-slate-800 shadow-xl">
+        {/* Top Header & Metadata Stats Bar */}
+        <div className="flex flex-col w-full bg-slate-950/95 border-b border-slate-800 shadow-xl">
           <Header 
             activeTab={activeTab} 
             onTabStatusChange={(tab: string) => setActiveTab(tab)} 
@@ -33,7 +33,7 @@ export default function App() {
           />
 
           {/* Top Metadata Stats Bar */}
-          <div className="px-6 py-3 bg-slate-900/90 border-t border-slate-800 backdrop-blur-md grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-mono">
+          <div className="px-6 py-3 bg-slate-900/90 border-t border-slate-800 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-mono">
             <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl flex flex-col gap-1 shadow-inner">
               <span className="text-[10px] uppercase text-slate-400 font-semibold">Acquisition ID</span>
               <span className="text-indigo-300 truncate">NISAR_L2_PR_GCOV_034_092...</span>
@@ -44,7 +44,7 @@ export default function App() {
             </div>
             <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl flex flex-col gap-1 shadow-inner">
               <span className="text-[10px] uppercase text-slate-400 font-semibold">Radar Layers</span>
-              <span className="text-emerald-400 font-medium">4 Available[span_0](start_span)[span_0](end_span)</span>
+              <span className="text-emerald-400 font-medium">4 Available</span>
             </div>
             <div className="bg-slate-950/70 border border-slate-800 p-2.5 rounded-xl flex flex-col gap-1 shadow-inner">
               <span className="text-[10px] uppercase text-slate-400 font-semibold">Instrument</span>
@@ -64,7 +64,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* SCROLLABLE MAIN DASHBOARD CONTENT (Sirf yeh hissa scroll hoga) */}
+        {/* Main Dashboard Content */}
         <main className="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 max-w-[1850px] w-full mx-auto">
           
           {/* Left Sidebar: Radar Layer Controls & Opacity */}
