@@ -10,33 +10,32 @@ interface LayerConfig {
   url: string;
 }
 
-const TILE_BASE =
-  'https://apbfchultmtjqzdbncsq.supabase.co/storage/v1/object/public/induspulse-tiles/tiles';
+const BASE_URL = 'https://apbfchultmtjqzdbncsq.supabase.co/storage/v1/object/public/induspulse-tiles/tiles';
 
 const RASTER_LAYERS: LayerConfig[] = [
   {
     id: 'hhhh',
     name: 'HHHH Backscatter',
     description: 'Horizontal-Transmit, Horizontal-Receive polarization.',
-    url: `${TILE_BASE}/HHHH/{z}/{x}/{y}.png`
+    url: `${BASE_URL}/HHHH/{z}/{x}/{y}.png`
   },
   {
     id: 'hvhv',
     name: 'HVHV Backscatter',
     description: 'Cross-polarization, often more sensitive to vegetation and volume scattering.',
-    url: `${TILE_BASE}/HVHV/{z}/{x}/{y}.png`
+    url: `${BASE_URL}/HVHV/{z}/{x}/{y}.png`
   },
   {
     id: 'ratio',
     name: 'Polarization Ratio',
     description: 'Derived ratio between the two polarization channels.',
-    url: `${TILE_BASE}/polarization-ratio/{z}/{x}/{y}.png`
+    url: `${BASE_URL}/polarization-ratio/{z}/{x}/{y}.png`
   },
   {
     id: 'ratiodb',
     name: 'Polarization Ratio (dB)',
     description: 'The same ratio on a decibel scale for easier contrast comparison.',
-    url: `${TILE_BASE}/polarization-ratio-db/{z}/{x}/{y}.png`
+    url: `${BASE_URL}/polarization-ratio-db/{z}/{x}/{y}.png`
   }
 ];
 
@@ -99,6 +98,9 @@ export const MapPanel: React.FC = () => {
 
       map.current.on('error', (e: any) => {
         const status = e?.error?.status;
+        if (status === 400 || status === 404) {
+          return;
+        }
         if (e?.sourceId === 'nisar-raster-source' && status !== 404) {
           setTileError(true);
         }
@@ -260,3 +262,5 @@ export const MapPanel: React.FC = () => {
     </div>
   );
 };
+
+export default MapPanel;

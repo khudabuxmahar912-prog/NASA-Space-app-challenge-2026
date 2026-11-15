@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AboutPanel } from './components/AboutPanel';
 import { Header } from './components/Header';
 import { MapPanel } from './components/MapPanel';
 import { Layers, ShieldAlert, Cpu, Database, Compass } from 'lucide-react';
@@ -111,6 +112,8 @@ export default function App() {
               ))}
             </ul>
           </div>
+
+          <AboutPanel />
 
           <div className="mt-auto bg-slate-950/80 border border-amber-500/20 rounded-xl p-3.5 flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
