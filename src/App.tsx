@@ -136,7 +136,7 @@ export default function App() {
               <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-medium text-emerald-300">Data Source</span>
-                <span className="text-[11px] text-slate-400">Supabase Storage (induspulse-tiles)[span_1](start_span)[span_1](end_span)</span>
+                <span className="text-[11px] text-slate-400">Supabase Storage (induspulse-tiles)</span>
               </div>
             </div>
 
@@ -174,7 +174,7 @@ export default function App() {
                     <span className="text-xs font-bold text-red-500">NASA</span>
                   </div>
                   <p className="text-[11px] text-slate-300 leading-relaxed">
-                    INDUSPULSE is a NASA Space Apps project that explores real NISAR radar observations over the Lower Indus Basin using advanced polarimetric analysis[span_2](start_span)[span_2](end_span).
+                    INDUSPULSE is a NASA Space Apps project that explores real NISAR radar observations over the Lower Indus Basin using advanced polarimetric analysis.
                   </p>
                   <div className="text-[11px] font-mono text-slate-400 space-y-1 pt-2 border-t border-slate-800">
                     <div><strong>Mission:</strong> NISAR (NASA-ISRO)</div>
@@ -208,9 +208,9 @@ export default function App() {
                     Limitations
                   </div>
                   <ul className="list-disc pl-4 text-[11px] text-slate-300 space-y-1">
-                    <li>Single acquisition (no time series)[span_3](start_span)[span_3](end_span)</li>
-                    <li>Requires independent validation[span_4](start_span)[span_4](end_span)</li>
-                    <li>Interpretations are exploratory[span_5](start_span)[span_5](end_span)</li>
+                    <li>Single acquisition (no time series)</li>
+                    <li>Requires independent validation</li>
+                    <li>Interpretations are exploratory</li>
                   </ul>
                   <div 
                     onClick={() => setModalType('learnMore')}
@@ -249,8 +249,8 @@ export default function App() {
                   Key Features
                 </div>
                 <div className="text-[11px] text-slate-300 space-y-1 font-mono">
-                  <div>✓ 4 Radar Layers (HHHH, HVHV, PR, PR dB)[span_6](start_span)[span_6](end_span)</div>
-                  <div>✓ Interactive MapLibre Visualization[span_7](start_span)[span_7](end_span)</div>
+                  <div>✓ 4 Radar Layers (HHHH, HVHV, PR, PR dB)</div>
+                  <div>✓ Interactive MapLibre Visualization</div>
                   <div>✓ Real Scientific Metadata & Lineage</div>
                 </div>
               </div>
@@ -267,6 +267,37 @@ export default function App() {
                 </div>
               </div>
 
+            </div>
+
+            {/* Team Orbital Intelligence Section */}
+            <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs">
+                  <Satellite className="w-4 h-4" />
+                  Team Orbital Intelligence — NASA Space Apps Challenge 2026
+                </div>
+                <span className="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2.5 py-0.5 rounded-full font-mono">
+                  4 Members
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 font-mono">
+                <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Team Lead</span>
+                  <span className="text-xs font-bold text-indigo-300">Khuda Bux (KB mahar)</span>
+                </div>
+                <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Researcher / Analyst</span>
+                  <span className="text-xs font-bold text-slate-200">Ayesha Mubashara</span>
+                </div>
+                <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">GIS Specialist</span>
+                  <span className="text-xs font-bold text-slate-200">Malaika Jannat</span>
+                </div>
+                <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1">
+                  <span className="text-[10px] text-slate-400 uppercase font-semibold">Systems Engineer</span>
+                  <span className="text-xs font-bold text-slate-200">Abdul Wahab</span>
+                </div>
+              </div>
             </div>
 
           </section>
@@ -312,7 +343,7 @@ export default function App() {
                   <div className="space-y-2">
                     <h4 className="font-bold text-slate-200">Study Region: Lower Indus Basin (Sindh, Pakistan)</h4>
                     <p className="text-slate-400">
-                      The Lower Indus Basin corridor spans agricultural and arid zones around Nawabshah, Hyderabad, and Sukkur. INDUSPULSE utilizes Level-2 Geocoded Polarimetric Covariance (GCOV) data to analyze backscatter responses.
+                      The Lower Indus Basin corridor spans agricultural and arid zones around Nawabshah, Hyderabad, and Sukkur,and western side that touches indus. INDUSPULSE utilizes Level-2 Geocoded Polarimetric Covariance (GCOV) data to analyze backscatter responses.
                     </p>
                   </div>
                 </>
@@ -323,14 +354,14 @@ export default function App() {
                   <div className="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-xl space-y-2">
                     <h3 className="font-bold text-emerald-300 text-sm">Polarimetric Processing Workflow</h3>
                     <p className="text-slate-300">
-                      Raw HDF5 granules from Alaska Satellite Facility (ASF) were processed into intermediate GeoTIFF layers before generating optimized visualization PNG tiles hosted on Supabase storage[span_8](start_span)[span_8](end_span).
+                      Raw HDF5 granules from Alaska Satellite Facility (ASF) were processed into intermediate GeoTIFF layers before generating optimized visualization PNG tiles hosted on Supabase storage.
                     </p>
                   </div>
                   <div className="space-y-2">
                     <h4 className="font-bold text-slate-200">Mathematical Formulations</h4>
                     <ul className="list-disc pl-4 space-y-1 text-slate-400">
-                      <li><strong>Linear Polarization Ratio:</strong> PR = HHHH / HVHV[span_9](start_span)[span_9](end_span)</li>
-                      <li><strong>Decibel Conversion:</strong> PR_dB = 10 * log10(PR)[span_10](start_span)[span_10](end_span)</li>
+                      <li><strong>Linear Polarization Ratio:</strong> PR = HHHH / HVHV</li>
+                      <li><strong>Decibel Conversion:</strong> PR_dB = 10 * log10(PR)</li>
                     </ul>
                   </div>
                 </>
@@ -341,7 +372,7 @@ export default function App() {
                   <div className="bg-amber-950/30 border border-amber-500/30 p-4 rounded-xl space-y-2">
                     <h3 className="font-bold text-amber-300 text-sm">Project Architecture & Scientific Scope</h3>
                     <p className="text-slate-300">
-                      INDUSPULSE provides judges and researchers with direct exploratory access to real NASA NISAR L-band GCOV observations over Sindh, Pakistan[span_11](start_span)[span_11](end_span).
+                      INDUSPULSE provides judges and researchers with direct exploratory access to real NASA NISAR L-band GCOV observations over Sindh, Pakistan.
                     </p>
                   </div>
                   <div className="space-y-2">
