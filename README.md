@@ -304,9 +304,14 @@ We acknowledge NASA, ISRO and the NISAR mission teams for making Earth observati
 
 We also acknowledge the NASA Space Apps Challenge for providing an opportunity to explore Earth science through collaborative innovation.
 
-Project Links
+Project Links and deployment 
 
-- Live Application: https://nasa-space-app-challenge-2026-pi.vercel.app
+- 1. Primary Application — INDUSPULSE
+https://nasa-space-app-challenge-2026-pi.vercel.app/
+This is the primary project demonstration for exploring the reported NISAR GCOV radar visualization layers.
+2. Additional Deployment — Sigma
+https://nasa-space-app-challenge-2026-sigma.vercel.app/
+This additional deployment contains a separate terrain and geology visualization interface.
 - GitHub Repository: github.com/khudabuxmahar912-prog/NASA-Space-challenge-2026
 - Project Documentation: https://drive.google.com/drive/folders/11f4aVFegTNLNZ8cFgkRFGA49_PclTYOC?usp=sharing
 
